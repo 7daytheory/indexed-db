@@ -62,16 +62,19 @@ function displayTeams() {
         const cursor = event.target.result;
         if (cursor) {
             const li = document.createElement("li");
+            li.className = "list-group-item d-flex justify-content-between align-items-center";
             li.textContent = `Market: ${cursor.value.market}, Name: ${cursor.value.name}, Alias: ${cursor.value.alias}`;
             li.dataset.id = cursor.value.id;
 
             const editButton = document.createElement("button");
+            editButton.className = "btn btn-sm btn-primary mr-2";
             editButton.textContent = "Edit";
             editButton.onclick = function() {
                 editData(cursor.value.id);
             };
 
             const deleteButton = document.createElement("button");
+            deleteButton.className = "btn btn-sm btn-danger";
             deleteButton.textContent = "Delete";
             deleteButton.onclick = function() {
                 deleteData(cursor.value.id);
@@ -83,6 +86,30 @@ function displayTeams() {
 
             cursor.continue();
         }
+    };
+}
+
+function editData(id) {
+    const transaction = db.transaction(["teams"], "readwrite");
+    const objectStore = transaction.objectStore("teams");
+    const request = objectStore.get(id);
+
+    request.onsuccess = function(event) {
+        const data = event.target.result;
+        document.getElementById("key").value = data.id;
+        document.getElementById("market").value = data.market;
+        document.getElementById("name").value = data.name;
+        document.getElementById("alias").value = data.alias;
+    };
+}
+
+function deleteData(id) {
+    const transaction = db.transaction(["teams"], "readwrite");
+    const objectStore = transaction.objectStore("teams");
+    const request = objectStore.delete(id);
+
+    request.onsuccess = function() {
+        displayData();
     };
 }
 
