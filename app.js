@@ -7,7 +7,7 @@ request.onerror = function(event) {
 
 request.onsuccess = function(event) {
     db = event.target.result;
-    console.log("Display Data!");
+    displayTeams();
 };
 
 request.onupgradeneeded = function(event) {
@@ -40,16 +40,52 @@ function addData(event) {
             data.alias = alias;
             const updateRequest = objectStore.put(data);
             updateRequest.onsuccess = function() {
+                displayTeams(); //Update team list
                 clearForm(); //Clear data in form
             };
         };
     } else {
         const request = objectStore.add({ market, name, alias });
         request.onsuccess = function() {
+            displayTeams(); //Update team list
             clearForm(); //Clear data in form
         };
     }
 }
+
+function displayTeams() {
+    const objectStore = db.transaction("teams").objectStore("teams");
+    const dataList = document.getElementById("dataList");
+    dataList.innerHTML = "";
+
+    objectStore.openCursor().onsuccess = function(event) {
+        const cursor = event.target.result;
+        if (cursor) {
+            const li = document.createElement("li");
+            li.textContent = `Market: ${cursor.value.market}, Name: ${cursor.value.name}, Alias: ${cursor.value.alias}`;
+            li.dataset.id = cursor.value.id;
+
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.onclick = function() {
+                editData(cursor.value.id);
+            };
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function() {
+                deleteData(cursor.value.id);
+            };
+
+            li.appendChild(editButton);
+            li.appendChild(deleteButton);
+            dataList.appendChild(li);
+
+            cursor.continue();
+        }
+    };
+}
+
 
 function clearForm() {
     document.getElementById("key").value = "";
