@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB Storage Application</title>
+</head>
+<body>
+    <h1>List of NHL Teams</h1>
+    <p>For now will be entering them manually but I will be using an API to retrieve this data and store/display it in or from IndexedDB</p>
+    <form id="dataForm">
+        <input type="hidden" id="key" value=""> <!-- Will use the unique team ID from API -->
+        <label for="market">Market</label>
+        <input type="text" id="market" placeholder="Toronto" required>
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Leafs" required>
+        <label for="alias">Alias</label>
+        <input type="text" id="alias" placeholder="Tor" required>
+        <button type="submit">Save</button>
+        <button type="button" id="clearForm">Clear</button>
+    </form>
+</body>
+</html>
